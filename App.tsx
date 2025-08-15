@@ -20,6 +20,7 @@ import Home from './src/home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddressDetails from './src/addressDetails';
+import './global.css';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -37,18 +38,15 @@ function AppContent() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <View>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={Home}></Stack.Screen>
-          <Stack.Screen
-            name="AddressDetails"
-            component={AddressDetails}
-          ></Stack.Screen>
-        </Stack.Navigator>
-      </NavigationContainer>
-      <Text className="text-6xl color-red-500">Hello Wo</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home}></Stack.Screen>
+        <Stack.Screen
+          name="AddressDetails"
+          component={AddressDetails}
+        ></Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
