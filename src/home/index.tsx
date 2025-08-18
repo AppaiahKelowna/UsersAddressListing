@@ -1,16 +1,23 @@
 import { Text, View, TextInput, TouchableOpacity } from 'react-native';
 import '../../global.css';
 import { useState } from 'react';
+import { UseSelector, useDispatch } from 'react-redux';
+import { saveToState } from '../slice/addressListSlice';
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
+  const dispatch = useDispatch();
   const handleUserDetails = () => {
     if (fName && lName && email) {
       const address = { firstName: fName, lastName: lName, email: email };
+      console.log('in Home compo', address);
+      dispatch(saveToState(address));
+      navigation.navigate('Address Details');
     }
   };
+
   return (
     <View className=" bg-gray-200 justify-center items-center gap-4 border-black m-5 p-5">
       <View className="flex-row items-center w-80 bg-red-300 px-5 rounded-md">

@@ -21,6 +21,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddressDetails from './src/addressDetails';
 import './global.css';
+import { Provider } from 'react-redux';
+import { store } from './src/store/addressStore.js';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -38,15 +40,17 @@ function AppContent() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home}></Stack.Screen>
-        <Stack.Screen
-          name="AddressDetails"
-          component={AddressDetails}
-        ></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Home}></Stack.Screen>
+          <Stack.Screen
+            name="Address Details"
+            component={AddressDetails}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
