@@ -11,9 +11,6 @@ export const addressListSlice = createSlice({
             console.log("inside saveToState Before", action.payload)
             state.value = [...state.value, action.payload]
             console.log("inside saveToState After", state.value)
-        },
-        fetchFromState: (state) => {
-            return state.value
         }
     }
 })
