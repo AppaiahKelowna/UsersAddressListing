@@ -1,22 +1,41 @@
 import { Text, View, TextInput, TouchableOpacity } from 'react-native';
 import '../../global.css';
-import { useState } from 'react';
-import { UseSelector, useDispatch } from 'react-redux';
-import { saveToState } from '../slice/addressListSlice';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  saveToState,
+  selectAddressList,
+  saveAddress,
+  fetchAddress,
+} from '../slice/addressListSlice';
 
 const Home = ({ navigation }) => {
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
   const dispatch = useDispatch();
+  const addressLst = useSelector(selectAddressList);
   const handleUserDetails = () => {
     if (fName && lName && email) {
       const address = { firstName: fName, lastName: lName, email: email };
       console.log('in Home compo', address);
       dispatch(saveToState(address));
+      dispatch(saveAddress([...addressLst, address]));
       navigation.navigate('Address Details');
     }
   };
+
+  useEffect(() => {
+    console.log('UseEffect called while app loading', addressLst);
+    dispatch(fetchAddress());
+  }, [dispatch]);
+
+  // React when state updates
+  useEffect(() => {
+    if (addressLst.length > 0) {
+      navigation.navigate('Address Details');
+    }
+  }, [addressLst, navigation]);
 
   return (
     <View className=" bg-gray-200 justify-center items-center gap-4 border-black m-5 p-5">
