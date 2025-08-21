@@ -8,20 +8,31 @@ import {
   saveAddress,
   fetchAddress,
 } from '../slice/addressListSlice';
+import formSchema from '../schema/formSchema';
+import { formatError } from 'zod/v4';
 
 const Home = ({ navigation }) => {
-  const [fName, setFName] = useState('');
-  const [lName, setLName] = useState('');
-  const [email, setEmail] = useState('');
+  const [form, setForm] = useState({ email: '', firstName: '', lastName: '' });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const dispatch = useDispatch();
   const addressLst = useSelector(selectAddressList);
   const handleUserDetails = () => {
-    if (fName && lName && email) {
-      const address = { firstName: fName, lastName: lName, email: email };
-      console.log('in Home compo', address);
-      dispatch(saveToState(address));
-      dispatch(saveAddress([...addressLst, address]));
+    const result = formSchema.safeParse(form);
+    if (result.success) {
+      dispatch(saveToState(form));
+      dispatch(saveAddress([...addressLst, form]));
       navigation.navigate('Address Details');
+    } else {
+      const formattedErrors: { [key: string]: string } = {};
+      result.error.errors.forEach(err => {
+        if (err.path[0]) {
+          console.log(err.path);
+          console.log(err.path[0]);
+          formattedErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(formattedErrors);
     }
   };
 
@@ -43,26 +54,35 @@ const Home = ({ navigation }) => {
         <Text className="font-bold">First Name:</Text>
         <TextInput
           placeholder="Joe"
-          value={fName}
-          onChangeText={setFName}
+          value={form.firstName}
+          onChangeText={text => setForm({ ...form, firstName: text })}
         ></TextInput>
       </View>
+      {errors.firstName && (
+        <Text className="text-red-900 font-bold ">{errors.firstName}</Text>
+      )}
       <View className="flex-row items-center w-80 bg-red-300 px-5 rounded-md">
         <Text className="font-bold">Second Name:</Text>
         <TextInput
           placeholder="Hart"
-          value={lName}
-          onChangeText={setLName}
+          value={form.lastName}
+          onChangeText={text => setForm({ ...form, lastName: text })}
         ></TextInput>
       </View>
+      {errors.lastName && (
+        <Text className="text-red-900 font-bold">{errors.lastName}</Text>
+      )}
       <View className="flex-row items-center w-80 bg-red-300 px-5 rounded-md">
         <Text className="font-bold">Email:</Text>
         <TextInput
           placeholder="joe@mail.com"
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={text => setForm({ ...form, email: text })}
         ></TextInput>
       </View>
+      {errors.email && (
+        <Text className="text-red-900 font-bold">{errors.email}</Text>
+      )}
       <TouchableOpacity
         className="bg-blue-700 p-2 rounded-md"
         onPress={handleUserDetails}
